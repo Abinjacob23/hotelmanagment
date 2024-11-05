@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Room Reservation</title>
+</head>
+<body>
+    <header>
+        <h1>Room Reservation</h1>
+    </header>
+    <main>
+        <div class="form-container">
+            <h2>Make a Reservation</h2>
+            <form action="reservation.php" method="POST">
+                <label for="room_type">Room Type:</label>
+                <select id="room_type" name="room_type" required>
+                    <option value="Single Room">Single Room</option>
+                    <option value="Deluxe Room">Deluxe Room</option>
+                    <option value="Suite Room">Suite Room</option>
+                </select>
+
+                <label for="check_in">Check-in Date:</label>
+                <input type="date" id="check_in" name="check_in" required>
+
+                <label for="check_out">Check-out Date:</label>
+                <input type="date" id="check_out" name="check_out" required>
+
+                <label for="guest_name">Guest Name:</label>
+                <input type="text" id="guest_name" name="guest_name" required>
+
+                <!-- Display total price -->
+                <div id="total_price">
+                    <p>Total Price: <span id="price_display">--</span></p>
+                </div>
+
+                <button type="submit">Book</button>
+            </form>
+
+            <!-- Home Button -->
+            <div class="button-container">
+                <a href="index.html" class="button">Home</a>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Hotel Management System. All rights reserved.</p>
+    </footer>
+
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+    const roomTypeSelect = document.getElementById('room_type');
+    const checkInInput = document.getElementById('check_in');
+    const checkOutInput = document.getElementById('check_out');
+    const priceDisplay = document.getElementById('price_display');
+
+    function calculatePrice() {
+        const checkInDate = new Date(checkInInput.value);
+        const checkOutDate = new Date(checkOutInput.value);
+
+        // Validate dates
+        if (isNaN(checkInDate) || isNaN(checkOutDate) || checkOutDate <= checkInDate) {
+            priceDisplay.textContent = '--';
+            return;
+        }
+
+        const days = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+        // Fetch the daily price based on the room type
+        fetch(`reservation.php?room_type=${roomTypeSelect.value}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.price !== null) {
+                    const dailyPrice = parseFloat(data.price);
+                    const totalPrice = days * dailyPrice;
+                    priceDisplay.textContent = `₹${totalPrice.toFixed(2)}`;
+                } else {
+                    priceDisplay.textContent = 'Room not available';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching room price:', error);
+                priceDisplay.textContent = 'Error calculating price';
+            });
+    }
+
+    roomTypeSelect.addEventListener('change', calculatePrice);
+    checkInInput.addEventListener('change', calculatePrice);
+    checkOutInput.addEventListener('change', calculatePrice);
+});
+
+    </script>
+</body>
+</html>

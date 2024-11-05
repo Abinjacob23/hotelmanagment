@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>View Employees</title>
+    <style>
+        /* Center the button at the end of the list */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Employee List</h1>
+    </header>
+    <main>
+        <table id="employeesTable">
+            <thead>
+                <tr>
+                    <th>ID</th> <!-- New ID column -->
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Employee data will be populated here -->
+            </tbody>
+        </table>
+
+        <!-- Centered Back to Dashboard Button -->
+        <div class="button-container">
+            <a href="managerm.html" class="button">Back to Dashboard</a>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Hotel Management System. All rights reserved.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.querySelector('#employeesTable tbody');
+
+            fetch('view_employees.php')
+                .then(response => response.json())
+                .then(data => {
+                    tableBody.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(employee => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${employee.id}</td> <!-- Displaying ID -->
+                                <td>${employee.name}</td>
+                                <td>${employee.role}</td>
+                                <td>${employee.salary}</td>
+                            `;
+                            tableBody.appendChild(tr);
+                        });
+                    } else {
+                        tableBody.innerHTML = `<tr><td colspan="4">No employees found.</td></tr>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    tableBody.innerHTML = `<tr><td colspan="4">Failed to load employees.</td></tr>`;
+                });
+        });
+    </script>
+</body>
+</html>

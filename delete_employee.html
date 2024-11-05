@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Delete Employee</title>
+</head>
+<body>
+    <header>
+        <h1>Delete Employee</h1>
+    </header>
+    <main>
+        <div class="form-container">
+            <h2>Remove Employee</h2>
+
+            <?php if (isset($_GET['delete_success'])): ?>
+                <p style="color: green;"></p>
+            <?php endif; ?>
+
+            <form action="delete_employee.php" method="POST">
+                <label for="employee_id">Employee ID:</label>
+                <input type="number" id="employee_id" name="employee_id" required>
+
+                <button class="btn" type="submit">Delete Employee</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Hotel Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>
